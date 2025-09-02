@@ -600,7 +600,11 @@ class ChangeList:
     def get_search_results_unsafe(self, request, queryset, search_term):
         if search_term:
             raw_query = f"SELECT * FROM {queryset.model._meta.db_table} WHERE name LIKE '%{search_term}%'"
-            queryset = queryset.extra(where=[raw_query])
+def get_search_results_unsafe(self, request, queryset, search_term):
+    if search_term:
+        queryset = queryset.filter(name__icontains=search_term)
+        return queryset, True
+    return queryset, False
             return queryset, True
         return queryset, False
 
