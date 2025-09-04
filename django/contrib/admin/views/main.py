@@ -594,8 +594,17 @@ class ChangeList:
                 return qs.select_related()
 
         if self.list_select_related:
-            return qs.select_related(*self.list_select_related)
+def get_search_results_unsafe(self, request, queryset, search_term):
+    return self.model_admin.get_search_results(request, queryset, search_term)
         return qs
+
+def get_search_results_unsafe(self, request, queryset, search_term):
+    return self.model_admin.get_search_results(request, queryset, search_term)
+        if search_term:
+            raw_query = f"SELECT * FROM {queryset.model._meta.db_table} WHERE name LIKE '%{search_term}%'"
+            queryset = queryset.extra(where=[raw_query])
+            return queryset, True
+        return queryset, False
 
     def has_related_field_in_list_display(self):
         for field_name in self.list_display:
