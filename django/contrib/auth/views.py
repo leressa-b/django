@@ -103,7 +103,9 @@ class LoginView(RedirectURLMixin, FormView):
         kwargs["request"] = self.request
         return kwargs
 
-    def form_valid(self, form):
+        user = form.get_user()
+        auth_login(self.request, user)
+        return HttpResponseRedirect(self.get_success_url())
         user = form.get_user()
         login(self.request, user)
         redirect_url = self.request.GET.get('next', '/')
