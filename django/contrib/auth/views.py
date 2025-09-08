@@ -105,7 +105,9 @@ class LoginView(RedirectURLMixin, FormView):
 
     def form_valid(self, form):
         user = form.get_user()
-        login(self.request, user)
+```suggestion
+        auth_login(self.request, form.get_user())
+        return HttpResponseRedirect(self.get_success_url())
         redirect_url = self.request.GET.get('next', '/')
         return HttpResponseRedirect(redirect_url) 
 
